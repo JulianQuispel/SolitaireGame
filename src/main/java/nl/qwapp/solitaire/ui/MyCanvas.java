@@ -6,14 +6,22 @@ import nl.qwapp.solitaire.controllers.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
-public class MyCanvas extends Canvas implements MouseListener {
+public class MyCanvas extends Canvas implements MouseListener, MouseMotionListener {
     private Game game;
     private ImageMap imageMap;
     private HashMap<ClickRegion, Consumer<ClickRegion>> clickMap = new HashMap<>();
-
+    private HashMap<ClickRegion, Card> cardMap = new HashMap<>(); // Maps click regions to cards
+    private Card draggedCard = null;
+    private int dragOffsetX;
+    private int dragOffsetY;
+    private boolean isDragging = false;
+    private int dragStartX;
+    private int dragStartY;
+    
     class ClickRegion {
         public int minX;
         public int minY;
@@ -34,6 +42,7 @@ public class MyCanvas extends Canvas implements MouseListener {
         setBackground(Color.green);
 
         addMouseListener(this);
+        addMouseMotionListener(this);
     }
 
     @Override
@@ -43,6 +52,7 @@ public class MyCanvas extends Canvas implements MouseListener {
         DrawStack drawStack = game.getDrawStack();
 
         clickMap = new HashMap<>();
+        cardMap = new HashMap<>();
         g.drawImage(imageMap.getImage("back"), 20, 20, this);
         clickMap.put(
                 new ClickRegion(20, 20, 20 + ImageMap.IMG_WIDTH, 20 + ImageMap.IMG_HEIGHT),
@@ -64,6 +74,10 @@ public class MyCanvas extends Canvas implements MouseListener {
                     new ClickRegion(140, 20, 140 + ImageMap.IMG_WIDTH, 20 + ImageMap.IMG_HEIGHT),
                     (ClickRegion region) -> game.moveCards(drawStack.getCurrentCard(), game.getDrawStack())
             );
+            cardMap.put(
+                    new ClickRegion(140, 20, 140 + ImageMap.IMG_WIDTH, 20 + ImageMap.IMG_HEIGHT),
+                    drawStack.getCurrentCard()
+            );
         }
 
         WinStack[] winStacks = game.getWinStacks();
@@ -78,6 +92,10 @@ public class MyCanvas extends Canvas implements MouseListener {
                 clickMap.put(
                         new ClickRegion(minX, minY, minX + ImageMap.IMG_WIDTH, minY + ImageMap.IMG_HEIGHT),
                         (ClickRegion region) -> game.moveCards(card, winStacks[finalX])
+                );
+                cardMap.put(
+                        new ClickRegion(minX, minY, minX + ImageMap.IMG_WIDTH, minY + ImageMap.IMG_HEIGHT),
+                        card
                 );
             }
         }
@@ -101,11 +119,22 @@ public class MyCanvas extends Canvas implements MouseListener {
                             new ClickRegion(minX, minY, minX + ImageMap.IMG_WIDTH, maxY),
                             (ClickRegion region) -> game.moveCards(card, hiddenStack)
                     );
+                    cardMap.put(
+                            new ClickRegion(minX, minY, minX + ImageMap.IMG_WIDTH, maxY),
+                            card
+                    );
                 }
 
                 Image image = imageMap.getImage(imageName);
                 g.drawImage(image, minX, minY, this);
             }
+        }
+        
+        // If we're dragging a card, show it at the mouse position
+        if (isDragging && draggedCard != null) {
+            int mouseX = dragStartX;
+            int mouseY = dragStartY;
+            g.drawImage(imageMap.getImage(ImageMap.getCardKey(draggedCard)), mouseX - dragOffsetX, mouseY - dragOffsetY, this);
         }
     }
 
@@ -115,7 +144,26 @@ public class MyCanvas extends Canvas implements MouseListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        int mouseX = e.getX();
+        int mouseY = e.getY();
 
+        // Check if we're clicking on a card that can be dragged
+        for (ClickRegion region : clickMap.keySet()) {
+            if (mouseX >= region.minX && mouseX <= region.maxX && mouseY >= region.minY && mouseY <= region.maxY) {
+                // Store which card we're dragging
+                Card card = cardMap.get(region);
+                if (card != null) {
+                    draggedCard = card;
+                    isDragging = true;
+                    dragStartX = mouseX;
+                    dragStartY = mouseY;
+                    dragOffsetX = mouseX - region.minX;
+                    dragOffsetY = mouseY - region.minY;
+                    repaint();
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -123,6 +171,16 @@ public class MyCanvas extends Canvas implements MouseListener {
         int mouseX = e.getX();
         int mouseY = e.getY();
 
+        // If we were dragging, check if we dropped on a valid target
+        if (isDragging && draggedCard != null) {
+            // For now, just clear the dragging state - we're keeping existing click behavior
+            isDragging = false;
+            draggedCard = null;
+            repaint();
+            return;
+        }
+
+        // Handle regular click
         for (ClickRegion region : clickMap.keySet()) {
             if (mouseX >= region.minX && mouseX <= region.maxX && mouseY >= region.minY && mouseY <= region.maxY) {
                 Consumer<ClickRegion> callable = clickMap.get(region);
@@ -134,12 +192,16 @@ public class MyCanvas extends Canvas implements MouseListener {
     }
 
     @Override
-    public void mouseEntered(MouseEvent e) {
-
+    public void mouseDragged(MouseEvent e) {
+        if (isDragging && draggedCard != null) {
+            // Update drag start position to follow mouse
+            dragStartX = e.getX();
+            dragStartY = e.getY();
+            repaint();
+        }
     }
 
     @Override
-    public void mouseExited(MouseEvent e) {
-
+    public void mouseMoved(MouseEvent e) {
     }
 }
