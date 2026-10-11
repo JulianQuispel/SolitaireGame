@@ -1,4 +1,16 @@
 -------------------------------------------------------------------------------
 Test set: nl.qwapp.solitaire.ui.MyCanvasTest
 -------------------------------------------------------------------------------
-Tests run: 0, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 sec
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 0.044 s <<< FAILURE! - in nl.qwapp.solitaire.ui.MyCanvasTest
+testCanvasCreation  Time elapsed: 0.039 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.net.URL.toString()" because "url" is null
+	at nl.qwapp.solitaire.ui.MyCanvasTest.testCanvasCreation(MyCanvasTest.java:15)
+
+testDragStateTracking  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.net.URL.toString()" because "url" is null
+	at nl.qwapp.solitaire.ui.MyCanvasTest.testDragStateTracking(MyCanvasTest.java:37)
+
+testDragAndDropSetup  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "java.net.URL.toString()" because "url" is null
+	at nl.qwapp.solitaire.ui.MyCanvasTest.testDragAndDropSetup(MyCanvasTest.java:26)
+
