@@ -1,0 +1,13 @@
+nl/qwapp/solitaire/controllers/WinStack.class
+nl/qwapp/solitaire/Main.class
+nl/qwapp/solitaire/ui/MyCanvas.class
+nl/qwapp/solitaire/controllers/DrawStack.class
+nl/qwapp/solitaire/ui/MyCanvas$ClickRegion.class
+nl/qwapp/solitaire/controllers/Game.class
+nl/qwapp/solitaire/Card.class
+nl/qwapp/solitaire/controllers/Stack.class
+nl/qwapp/solitaire/ui/ImageMap.class
+nl/qwapp/solitaire/ui/Board.class
+nl/qwapp/solitaire/CardType.class
+nl/qwapp/solitaire/ui/Board$DrawButton.class
+nl/qwapp/solitaire/controllers/HiddenStack.class

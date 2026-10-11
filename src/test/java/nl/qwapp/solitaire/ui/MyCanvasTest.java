@@ -34,6 +34,6 @@ public class MyCanvasTest {
     @Test
     void testDragStateTracking() {
         // Test basic drag state tracking functionality
-        assertFalse(myCanvas.isDragging);
+        assertFalse(myCanvas.isDragging());
     }
 }

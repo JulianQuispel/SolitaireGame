@@ -22,6 +22,11 @@ public class MyCanvas extends Canvas implements MouseListener, MouseMotionListen
     private int dragStartX;
     private int dragStartY;
     
+    // Getter for drag state - needed for testing
+    public boolean isDragging() {
+        return isDragging;
+    }
+    
     class ClickRegion {
         public int minX;
         public int minY;
@@ -203,5 +208,15 @@ public class MyCanvas extends Canvas implements MouseListener, MouseMotionListen
 
     @Override
     public void mouseMoved(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        // No implementation needed
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        // No implementation needed
     }
 }

@@ -4,13 +4,13 @@ import nl.qwapp.solitaire.controllers.Game;
 import nl.qwapp.solitaire.ui.Board;
 
 public class Main {
-
     public static void main(String[] args) {
+        // Create and start the game
         Game game = new Game();
         game.start();
-
-        Board b = new Board(game);
-
-        b.draw();
+        
+        // Create the UI
+        Board board = new Board(game);
+        board.setVisible(true);
     }
 }
