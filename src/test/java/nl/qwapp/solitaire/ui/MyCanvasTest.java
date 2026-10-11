@@ -9,13 +9,11 @@ public class MyCanvasTest {
 
     @Test
     void testCanvasCreation() {
-        // Test that we can create a MyCanvas instance without errors
+        // This test focuses on verifying the class structure without resource loading
         Game game = new Game();
         game.start();
-        MyCanvas myCanvas = new MyCanvas(game);
-        
-        assertNotNull(myCanvas);
-        assertNotNull(game);
+        // Just verify the constructor can be called without throwing exceptions
+        assertDoesNotThrow(() -> new MyCanvas(game));
     }
 
     @Test
